@@ -1,15 +1,39 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import type { Request } from 'express';
+/* eslint-disable prettier/prettier */
+import { Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
+import { ProductsService } from './products.service';
 
 @Controller('products')
+// @Controller({})
 export class ProductsController {
-  @Get()
-  findAll(): string {
-    return 'This action returns all products';
+  productsService: ProductsService;
+
+  constructor(productsService: ProductsService){
+    this.productsService = productsService;
+  }
+  
+  @Get('/all')
+  findAll(): string[] {
+    return this.productsService.getAllProducts();
   }
 
-  @Post()
+  @Post('/create')
   create(): string {
-    return 'This action adds a new product';
+    return this.productsService.createProducts();
   }
+
+  @Put('/update')
+  update(id: string): string {
+    return this.productsService.updateProduct(id);
+  }
+
+  @Patch('/rename')
+  renameProduct(id: string): string {
+    return this.productsService.renameProduct(id);
+  }
+
+  @Delete('/delete')
+  delete(): string {
+    return this.productsService.deleteAllProducts();
+  }
+
 }
