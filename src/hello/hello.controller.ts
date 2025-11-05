@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, ParseIntPipe, Query, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { RangePipe } from './hello.pipe';
 
 @Controller('hello')
 export class HelloController {
@@ -11,8 +12,7 @@ export class HelloController {
     return response.status(200).json({
       message: 'Hello World!'
     });
-  } 
-
+  }
 
   // Manejo de errores con codigo personalizado
   @Get('error404')
@@ -34,4 +34,20 @@ export class HelloController {
   personalSuccessResponse(): string {
     return 'This is a 201 success response';
   }
+
+  @Get('range')
+  getByRange(@Query(RangePipe) query: { start: any; end: any }) {
+    console.log(typeof query.start); // string
+    console.log(typeof query.end); // string
+    return `This is a request with range: ${query.start} - ${query.end}`;
+  }
+
+  // Manejo los parametros con un parseo mediante los pipes de nestjs
+  // Cambio el tipo de dato del parametro de string a number
+  // Hay mas pipes como ParseBoolPipe, ParseArrayPipe, etc.
+  @Get('/:id')
+  getById(@Param('id', ParseIntPipe) id: number): string {
+    return `This is a request with id: ${id}`;
+  }
+
 }
