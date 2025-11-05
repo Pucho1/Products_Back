@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, HttpCode, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
 @Controller('hello')
@@ -12,4 +12,26 @@ export class HelloController {
       message: 'Hello World!'
     });
   } 
+
+
+  // Manejo de errores con codigo personalizado
+  @Get('error404')
+  @HttpCode(404)
+  error404(): string {
+    return 'This is a 404 error';
+  }
+
+  // Manejo de errores con codigo personalizado
+  @Get('error500')
+  @HttpCode(500)
+  error500(): string {
+    return 'This is a 500 error';
+  }
+
+  // Manejo de respuestas con codigo personalizado usando el pipeline de NestJS
+  @Get('success201')
+  @HttpCode(201)
+  personalSuccessResponse(): string {
+    return 'This is a 201 success response';
+  }
 }

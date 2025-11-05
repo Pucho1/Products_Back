@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
+import { ProductDto } from './products.dto';
 
 @Controller('products')
 // @Controller({})
@@ -11,14 +12,24 @@ export class ProductsController {
     this.productsService = productsService;
   }
   
+  // Asi recibo los query params que me pueden servir para filtros, paginacion, etc
   @Get('/all')
-  findAll(): string[] {
+  findAll(@Query() query: any) {
+    console.log(query);
     return this.productsService.getAllProducts();
   }
 
+  @Get('/:id')
+  getProductById(@Param('id') id: string) {
+    console.log(id);
+    return this.productsService.getProductById(id);
+  }
+
+  // Asi recibo el body de la peticion
   @Post('/create')
-  create(): string {
-    return this.productsService.createProducts();
+  create(@Body() productData: ProductDto) {
+    console.log(productData);
+    return this.productsService.createProducts(productData);
   }
 
   @Put('/update')
@@ -32,7 +43,12 @@ export class ProductsController {
   }
 
   @Delete('/delete')
-  delete(): string {
+  delete(@Param('id') id: string): string {
+    return this.productsService.deleteProductById(id);
+  }
+
+  @Delete('/delete/all')
+  deleteAll(): string {
     return this.productsService.deleteAllProducts();
   }
 
