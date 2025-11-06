@@ -1,7 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, HttpCode, Param, ParseIntPipe, Query, Req, Res } from '@nestjs/common';
-import type { Request, Response } from 'express';
+import { Controller, Get, HttpCode, Param, ParseIntPipe, Query, Req, Res, UseGuards } from '@nestjs/common';
+
 import { RangePipe } from './hello.pipe';
+import { AuthGuard } from './hello.guard';
+
+import type { Request, Response } from 'express';
+
 
 @Controller('hello')
 export class HelloController {
@@ -40,6 +44,12 @@ export class HelloController {
     console.log(typeof query.start); // string
     console.log(typeof query.end); // string
     return `This is a request with range: ${query.start} - ${query.end}`;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('guards/:id')
+  getAdminData(@Param('id', ParseIntPipe) id: number): string {
+    return `This is a request with id: ${id}`;
   }
 
   // Manejo los parametros con un parseo mediante los pipes de nestjs
