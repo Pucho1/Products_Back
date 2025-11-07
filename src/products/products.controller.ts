@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductDto } from './products.dto';
+import { ProductDto } from './products-dto/products.dto';
 
 @Controller('products')
 // @Controller({})
