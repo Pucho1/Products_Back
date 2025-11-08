@@ -1,40 +1,39 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductDto } from './products-dto/products.dto';
+import { ProductDto, ProductDtoToCreate } from './products-dto/products.dto';
 
+// Estos @xxxxxxx son decoradores los cuales son metadoatos que nest usa para al 
+//     momento de iniciar la aplicacion saber que es cada clase, metodo, propiedad, etc
 @Controller('products')
 // @Controller({})
 export class ProductsController {
-  productsService: ProductsService;
-
-  constructor(productsService: ProductsService){
-    this.productsService = productsService;
-  }
+  constructor(private productsService: ProductsService) {}
   
   // Asi recibo los query params que me pueden servir para filtros, paginacion, etc
   @Get('/all')
-  findAll(@Query() query: any) {
+  async findAll(@Query() query: any) {
     console.log(query);
-    return this.productsService.getAllProducts();
+    return await this.productsService.getAllProducts();
   }
 
   @Get('/:id')
-  getProductById(@Param('id') id: string) {
+  findProductById(@Param('id') id: string) {
     console.log(id);
     return this.productsService.getProductById(id);
   }
 
   // Asi recibo el body de la peticion
   @Post('/create')
-  create(@Body() productData: ProductDto) {
+  create(@Body() productData: ProductDtoToCreate): Promise<boolean> {
     console.log(productData);
-    return this.productsService.createProducts(productData);
+    const created = this.productsService.createProduct(productData);
+    return created;
   }
 
   @Put('/update')
-  update(id: string): string {
-    return this.productsService.updateProduct(id);
+  async update(id: string, @Body() productData: ProductDto): Promise<ProductDto | string> {
+    return await this.productsService.updateProduct(id, productData);
   }
 
   @Patch('/rename')
@@ -42,14 +41,14 @@ export class ProductsController {
     return this.productsService.renameProduct(id);
   }
 
-  @Delete('/delete')
-  delete(@Param('id') id: string): string {
-    return this.productsService.deleteProductById(id);
+  @Delete('/delete/:id')
+  async delete(@Param('id') id: string): Promise<string | NotFoundException> {
+    return await this.productsService.deleteProductById(id);
   }
 
   @Delete('/delete/all')
-  deleteAll(): string {
-    return this.productsService.deleteAllProducts();
+  async deleteAll(): Promise<string> {
+    return await this.productsService.deleteAllProducts();
   }
 
 }
