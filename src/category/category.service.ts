@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -12,29 +11,61 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-  ) {}
+  ) {};
 
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
-  }
+  /**
+   * 
+   * @param createCategoryDto 
+   * @returns 
+   */
+  async create(createCategoryDto: CreateCategoryDto): Promise<UpdateCategoryDto> {
 
-  findAll() {
-    return `This action returns all category`;
-  }
+    const category = await this.categoryRepository.save(createCategoryDto);
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
+    return category;
+  };
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
+ /**
+   * 
+   * @returns 
+   */
+  async findAll(): Promise<Category[]> {
+    return this.categoryRepository.find();
+  };
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
-  }
+  findOne(id: number): Promise<Category> {
+    const category= this.getCategoriesById(id);
+    return category;
+  };
 
-  async getCategoriesById(id: number): Promise<Category | NotFoundException> {
+   /**
+   * 
+   * @param updateCategoryDto 
+   * @returns 
+   */
+  async update( updateCategoryDto: UpdateCategoryDto): Promise<UpdateCategoryDto> {
+    const category = await this.categoryRepository.preload(updateCategoryDto);
+    if (!category) {
+      throw new NotFoundException(`Category ${updateCategoryDto.id} not found`);
+    }
+    return await this.categoryRepository.save(category);
+  };
+
+  async remove(id: number): Promise<boolean> {
+    const result = await this.categoryRepository.delete(id);
+    console.log(result);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Category ${id} not found`);
+    }
+    return true;
+  };
+
+   /**
+   * 
+   * @param id 
+   * @returns 
+   */
+  async getCategoriesById(id: number): Promise<Category> {
 
     const category  = await this.categoryRepository.findOne({ where : { id } });
 
@@ -44,5 +75,5 @@ export class CategoryService {
 
     return category;
     
-  }
+  };
 }
