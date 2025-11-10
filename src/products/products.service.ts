@@ -31,12 +31,12 @@ export class ProductsService {
    * Obtiene un producto por su ID
    * @returns Promise<ProductDto | NotFoundException>
    */
-  async getProductById(id: string): Promise<Products | NotFoundException> {
+  async getProductById(id: string): Promise<Products> {
     const newId = parseInt(id, 10);
     const product = await this.productsRepository.findOne({ where: { id: newId } });
 
     if (!product){
-      return new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product with id ${id} not found`);
     }
 
     return product;
@@ -56,12 +56,12 @@ export class ProductsService {
    * Elimina un producto por su ID
    * @returns Promise<string | NotFoundException>
    */
-  async deleteProductById(id: string): Promise<string | NotFoundException> {
+  async deleteProductById(id: string): Promise<string> {
 
     const product = await this.getProductById(id);
 
     if (product instanceof NotFoundException) {
-      return product;
+      throw new NotFoundException(`Product with id ${id} not found`);
     }
 
     await this.productsRepository.remove(product);
@@ -104,7 +104,7 @@ export class ProductsService {
    * @param productData: ProductDtoToCreate
    * @returns Promise<boolean>
    */
-	async createProduct(productData: ProductDtoToCreate): Promise<boolean | NotFoundException> {
+	async createProduct(productData: ProductDtoToCreate): Promise<boolean> {
     let category: any = null;
 
       if (productData.category) {
@@ -113,7 +113,7 @@ export class ProductsService {
       await this.productsRepository.save({ ...productData, category:  category ?? null });
 
       if (category instanceof NotFoundException) {
-        return category;
+        throw new NotFoundException(`Category with id ${productData.category} not found`);
       }
 		return true;
 	}

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto, ProductDtoToCreate } from './products-dto/products.dto';
 
@@ -25,7 +25,7 @@ export class ProductsController {
 
   // Asi recibo el body de la peticion
   @Post('/create')
-  create(@Body() productData: ProductDtoToCreate): Promise<boolean | NotFoundException> {
+  create(@Body() productData: ProductDtoToCreate): Promise<boolean> {
     console.log(productData);
     const created = this.productsService.createProduct(productData);
     return created;
@@ -54,7 +54,7 @@ export class ProductsController {
   }
 
   @Delete('/delete/:id')
-  async delete(@Param('id') id: string): Promise<string | NotFoundException> {
+  async delete(@Param('id') id: string): Promise<string> {
     return await this.productsService.deleteProductById(id);
   }
 
