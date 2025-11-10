@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { HelloModule } from './hello/hello.module';
 // import { User } from './users/userEntity/user.entity';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { HelloModule } from './hello/hello.module';
         synchronize: true,
       }),
     }),
+
+    CategoryModule,
   ],
 })
 export class AppModule {}

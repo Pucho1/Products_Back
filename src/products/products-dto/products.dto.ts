@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ProductDtoToCreate {
@@ -13,6 +12,18 @@ export class ProductDtoToCreate {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  category: number | null;
+
+  @IsString({ each: true })
+  @IsNotEmpty()
+  images: string[];
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
 }
 
 export class ProductDto {
@@ -31,4 +42,16 @@ export class ProductDto {
   @IsNumber()
   @IsNotEmpty()
   id: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  category: number | null;
+
+  @IsString({ each: true })
+  @IsNotEmpty()
+  images: string[];
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
 }

@@ -25,7 +25,7 @@ export class ProductsController {
 
   // Asi recibo el body de la peticion
   @Post('/create')
-  create(@Body() productData: ProductDtoToCreate): Promise<boolean> {
+  create(@Body() productData: ProductDtoToCreate): Promise<boolean | NotFoundException> {
     console.log(productData);
     const created = this.productsService.createProduct(productData);
     return created;
@@ -33,7 +33,19 @@ export class ProductsController {
 
   @Put('/update')
   async update(id: string, @Body() productData: ProductDto): Promise<ProductDto | string> {
-    return await this.productsService.updateProduct(id, productData);
+    const updatedProduct = await this.productsService.updateProduct(id, productData);
+
+    if (typeof updatedProduct === 'string') {
+      return updatedProduct;
+    }
+
+    return {...updatedProduct,
+      id: updatedProduct.id,
+      name: updatedProduct.name,
+      price: updatedProduct.price,
+      quantity: updatedProduct.quantity,
+      category: updatedProduct.category?.id || null,
+    };
   }
 
   @Patch('/rename')

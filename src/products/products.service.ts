@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,23 +5,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ProductDto, ProductDtoToCreate } from './products-dto/products.dto';
-import { Products } from './products-entity/products.entity';
+import { Products } from './products-entity/product.entity';
+import { CategoryService } from '../category/category.service';
+
 
 @Injectable()
 export class ProductsService {
 
-  products: ProductDto[] = [];
-
   constructor(
     @InjectRepository(Products)
     private productsRepository: Repository<Products>,
+    private readonly categoryService: CategoryService
   ) {}
 
   /**
    * Obtiene todos los productos
    * @returns Promise<ProductDto[]>
    */
-  async getAllProducts(): Promise<ProductDto[]> {
+  async getAllProducts(): Promise<Products[]> {
     const products = await this.productsRepository.find();
     return products;
   }
@@ -31,7 +31,7 @@ export class ProductsService {
    * Obtiene un producto por su ID
    * @returns Promise<ProductDto | NotFoundException>
    */
-  async getProductById(id: string): Promise<ProductDto | NotFoundException> {
+  async getProductById(id: string): Promise<Products | NotFoundException> {
     const newId = parseInt(id, 10);
     const product = await this.productsRepository.findOne({ where: { id: newId } });
 
@@ -73,14 +73,20 @@ export class ProductsService {
    * Actualiza un producto por su id 
    * @returns Promise<ProductDto | string>
    */
-  async updateProduct(id: string, productData: ProductDto): Promise<ProductDto | string> {
+  async updateProduct(id: string, productData: ProductDto): Promise<Products | string> {
     const product = await this.getProductById(id);
 
     if (product instanceof NotFoundException) {
       return product.message;
     }
 
-    await this.productsRepository.update(product.id, productData);
+    let category: any = null;
+    if (productData.category) {
+      category = await this.categoryService.getCategoriesById(productData.category);
+    }
+
+    await this.productsRepository.update(product.id,
+      { ...productData, category:  category ?? null });
     return `Product with id ${id} has been updated`;
   }
 
@@ -98,14 +104,21 @@ export class ProductsService {
    * @param productData: ProductDtoToCreate
    * @returns Promise<boolean>
    */
-	async createProduct(productData: ProductDtoToCreate): Promise<boolean> {
-    try {
-      await this.productsRepository.save(productData);
-    } catch (error) {
-      return false;
-    }
+	async createProduct(productData: ProductDtoToCreate): Promise<boolean | NotFoundException> {
+    let category: any = null;
+
+      if (productData.category) {
+        category = await this.categoryService.getCategoriesById(productData.category);
+      }
+      await this.productsRepository.save({ ...productData, category:  category ?? null });
+
+      if (category instanceof NotFoundException) {
+        return category;
+      }
 		return true;
 	}
+
+  
 
   // POR CATEGORIA const PRODUCTS = await this.productsRepository.findBy({ category: 'some-category' })
 
