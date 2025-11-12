@@ -17,16 +17,16 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(
+  async create(
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<CreateCategoryDto> {
-    const category = this.categoryService.create(createCategoryDto);
+    const category = await this.categoryService.create(createCategoryDto);
     return category;
   }
 
   @Get()
-  findAll(): Promise<UpdateCategoryDto[]> {
-    return this.categoryService.findAll();
+  async findAll(): Promise<UpdateCategoryDto[]> {
+    return await this.categoryService.findAll();
   }
 
   @Get(':id')
@@ -36,12 +36,12 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  update(@Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(updateCategoryDto);
+  async update(@Body() updateCategoryDto: UpdateCategoryDto) {
+    return await this.categoryService.update(updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<boolean> {
-    return this.categoryService.remove(+id);
+  async remove(@Param('id') id: string): Promise<boolean> {
+    return await this.categoryService.remove(+id);
   }
 }
