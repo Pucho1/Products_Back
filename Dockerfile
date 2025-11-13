@@ -9,13 +9,17 @@ COPY --from=dev-deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-FROM nginx:1.23.3 AS prod
+# Etapa 3: Imagen de producción
+FROM node:18-alpine AS production
+WORKDIR /app
 
-EXPOSE 8080
+# Copiamos solo lo necesario
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/dist ./dist
 
-# RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/default.conf.template /etc/nginx/templates/
+EXPOSE 3080
 
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para iniciar la app
+CMD ["node", "dist/main.js"]
