@@ -27,13 +27,16 @@ import { CategoryModule } from './category/category.module';
       inject: [ConfigService], // Inyecta el servicio de configuración
 
       useFactory: (config: ConfigService) => {
-        const isProd = process.env.NODE_ENV === 'production';
+        const isProd = Boolean(process.env.RAILWAY_ENVIRONMENT_NAME);
 
         // ⭐ Si estoy en producción → usar Railway DATABASE_URL
         // ⭐ Si estoy en local       → usar las variables del .env
 
         console.log('DATABASE_URL:', config.get('DATABASE_URL'));
         console.log('DB_HOST:', config.get('DB_HOST'));
+
+        console.log('isProd:', isProd);
+        console.log('DATABASE_URL:', config.get('DATABASE_URL'));
         return {
           type: 'postgres',
           ...(isProd
