@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { ProductDto, ProductDtoToCreate } from './products-dto/products.dto';
+import { ProductDto, ProductDtoToCreate, ProductUpdateDto } from './products-dto/products.dto';
 
 // Estos @xxxxxxx son decoradores los cuales son metadoatos que nest usa para al 
 //     momento de iniciar la aplicacion saber que es cada clase, metodo, propiedad, etc
@@ -18,7 +18,7 @@ export class ProductsController {
   }
 
   @Get('/:id')
-  findProductById(@Param('id') id: string) {
+  findProductById(@Param('id', ParseIntPipe) id: number) {
     console.log(id);
     return this.productsService.getProductById(id);
   }
@@ -31,13 +31,9 @@ export class ProductsController {
     return created;
   }
 
-  @Put('/update')
-  async update(id: string, @Body() productData: ProductDto): Promise<ProductDto | string> {
-    const updatedProduct = await this.productsService.updateProduct(id, productData);
-
-    if (typeof updatedProduct === 'string') {
-      return updatedProduct;
-    }
+  @Patch('/update/:id')
+  async update(@Param('id', ParseIntPipe) id: number, @Body() productData: ProductUpdateDto): Promise<ProductDto | string> {
+    const updatedProduct = await this.productsService.updateProduct( id, productData);
 
     return {...updatedProduct,
       id: updatedProduct.id,
@@ -54,7 +50,7 @@ export class ProductsController {
   }
 
   @Delete('/delete/:id')
-  async delete(@Param('id') id: string): Promise<string> {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<string> {
     return await this.productsService.deleteProductById(id);
   }
 
