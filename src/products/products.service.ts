@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { ProductDto, ProductDtoToCreate } from './products-dto/products.dto';
+import { ProductDtoToCreate, ProductUpdateDto } from './products-dto/products.dto';
 import { Products } from './products-entity/product.entity';
 import { CategoryService } from '../category/category.service';
 
@@ -31,9 +32,9 @@ export class ProductsService {
    * Obtiene un producto por su ID
    * @returns Promise<ProductDto | NotFoundException>
    */
-  async getProductById(id: string): Promise<Products> {
-    const newId = parseInt(id, 10);
-    const product = await this.productsRepository.findOne({ where: { id: newId } });
+  async getProductById(id: number): Promise<Products> {
+   
+    const product = await this.productsRepository.findOne({ where: { id } });
 
     if (!product){
       throw new NotFoundException(`Product with id ${id} not found`);
@@ -56,7 +57,7 @@ export class ProductsService {
    * Elimina un producto por su ID
    * @returns Promise<string | NotFoundException>
    */
-  async deleteProductById(id: string): Promise<string> {
+  async deleteProductById(id: number): Promise<string> {
 
     const product = await this.getProductById(id);
 
@@ -73,21 +74,24 @@ export class ProductsService {
    * Actualiza un producto por su id 
    * @returns Promise<ProductDto | string>
    */
-  async updateProduct(id: string, productData: ProductDto): Promise<Products | string> {
-    const product = await this.getProductById(id);
-
-    if (product instanceof NotFoundException) {
-      return product.message;
-    }
+  async updateProduct(id: number, productData: ProductUpdateDto): Promise<Products> {
 
     let category: any = null;
+    const preloadData: any = { id, ...productData };
+
     if (productData.category) {
       category = await this.categoryService.getCategoriesById(productData.category);
+      preloadData.category = category ?? null;
     }
 
-    await this.productsRepository.update(product.id,
-      { ...productData, category:  category ?? null });
-    return `Product with id ${id} has been updated`;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const product = await this.productsRepository.preload( preloadData  );
+
+    if (!product) {
+      throw new NotFoundException(`Product with id ${id} not found`)
+    }
+
+    return this.productsRepository.save(product);
   }
 
   /**
@@ -117,8 +121,6 @@ export class ProductsService {
       }
 		return true;
 	}
-
-  
 
   // POR CATEGORIA const PRODUCTS = await this.productsRepository.findBy({ category: 'some-category' })
 
