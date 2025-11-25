@@ -16,7 +16,10 @@ import { CategoryModule } from './category/category.module';
     HelloModule,
 
     // Habilitar el módulo de configuración globalmente
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+    }),
 
     // Conexión Asíncrona con TypeORM
     TypeOrmModule.forRootAsync({
@@ -28,6 +31,9 @@ import { CategoryModule } from './category/category.module';
 
         // ⭐ Si estoy en producción → usar Railway DATABASE_URL
         // ⭐ Si estoy en local       → usar las variables del .env
+
+        console.log('DATABASE_URL:', config.get('DATABASE_URL'));
+        console.log('DB_HOST:', config.get('DB_HOST'));
         return {
           type: 'postgres',
           ...(isProd
