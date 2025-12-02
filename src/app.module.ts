@@ -31,12 +31,6 @@ import { CategoryModule } from './category/category.module';
 
         // ⭐ Si estoy en producción → usar Railway DATABASE_URL
         // ⭐ Si estoy en local       → usar las variables del .env
-
-        console.log('DATABASE_URL:', config.get('DATABASE_URL'));
-        console.log('DB_HOST:', config.get('DB_HOST'));
-
-        console.log('isProd:', isProd);
-        console.log('DATABASE_URL:', config.get('DATABASE_URL'));
         return {
           type: 'postgres',
           ...(isProd
@@ -53,16 +47,7 @@ import { CategoryModule } from './category/category.module';
                 password: config.get<string>('DB_PASSWORD'),
                 database: config.get<string>('DB_NAME'),
               }),
-          // type: config.get<any>('DB_TYPE'), // Lee DB_TYPE (e.g., 'postgres')
-          // host: config.get<string>('DB_HOST'),
-          // port: config.get<number>('DB_PORT'),
-          // username: config.get<string>('DB_USERNAME'),
-          // password: config.get<string>('DB_PASSWORD'),
-          // database: config.get<string>('DB_NAME'),
-          // // Carga automática de todas las entidades definidas
-          // autoLoadEntities: true,
-          // // Crea el esquema de la BD automáticamente (¡Solo para desarrollo!)
-          // synchronize: true,
+          // Crea el esquema de la BD automáticamente (¡Solo para desarrollo!)
           autoLoadEntities: true,
           synchronize: true, // ⚠️ Para desarrollo. En prod usar migrations.
         };
