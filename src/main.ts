@@ -1,7 +1,16 @@
-import * as crypto from 'crypto';
+// import * as crypto from 'crypto';
+import { webcrypto } from 'crypto';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(global as any).crypto = crypto;
+// (global as any).crypto = crypto;
+
+// Inyectar crypto solo en producción
+if (process.env.NODE_ENV === 'production') {
+  if (!globalThis.crypto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    (globalThis as any).crypto = webcrypto;
+  }
+}
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -14,9 +23,13 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://elputooutlet.com',
+      'https://elputooutlet.es',
+      'https://www.elputooutlet.es',
+      'https://www.elputooutlet.es',
+      'https://api.elputooutlet.es',
       'http://localhost:5173', // URL donde corre tu React
     ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 
