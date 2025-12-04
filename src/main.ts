@@ -24,10 +24,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://elputooutlet.es',
-      'https://www.elputooutlet.es',
-      'https://www.elputooutlet.es',
-      'https://api.elputooutlet.es',
-      'http://localhost:5173', // URL donde corre tu React
+      'https://backend.elputooutlet.es',
+      'http://localhost:5173',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
