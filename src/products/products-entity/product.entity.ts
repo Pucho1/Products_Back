@@ -20,8 +20,8 @@ export class Products {
   })
   category: Category | null;
 
-  @Column('text', { array: true })
-  images: string[];
+  @Column({ type: 'jsonb', nullable: true })
+  images: { original: string }[];
 
   @Column()
   quantity: number;
