@@ -49,7 +49,7 @@ import { CategoryModule } from './category/category.module';
               }),
           // Crea el esquema de la BD automáticamente (¡Solo para desarrollo!)
           autoLoadEntities: true,
-          synchronize: true, // ⚠️ Para desarrollo. En prod usar migrations.
+          synchronize: false, // ⚠️ Para desarrollo. En prod usar migrations.
         };
       },
     }),

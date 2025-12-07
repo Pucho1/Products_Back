@@ -19,7 +19,7 @@ export class ProductDtoToCreate {
 
   @IsString({ each: true })
   @IsNotEmpty()
-  images: string[];
+  images: { original: string }[];
 
   @IsNumber()
   @IsNotEmpty()
@@ -49,7 +49,7 @@ export class ProductDto {
 
   @IsString({ each: true })
   @IsNotEmpty()
-  images: string[];
+  images: { original: string }[];
 
   @IsNumber()
   @IsNotEmpty()
@@ -79,7 +79,7 @@ export class ProductUpdateDto {
 
   @IsOptional()
   @IsString({ each: true })
-  images?: string[];
+  images?: { original: string }[];
 
   @IsOptional()
   @IsNumber()
