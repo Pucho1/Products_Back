@@ -11,10 +11,10 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
   
   // Asi recibo los query params que me pueden servir para filtros, paginacion, etc
-  @Get('/all')
-  async findAll(@Query() query: any) {
-    console.log(query);
-    return await this.productsService.getAllProducts();
+  @Get()
+  async findAllAndByFilter(@Query('category') category?: number) {
+    console.log('parametro de find all sirve para filtrar ----->',category);
+    return await this.productsService.getAllProductsAndByFilter(category);
   }
 
   @Get('/:id')

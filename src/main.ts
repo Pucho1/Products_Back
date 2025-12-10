@@ -26,6 +26,7 @@ async function bootstrap() {
       'https://elputooutlet.es',
       'https://backend.elputooutlet.es',
       'http://localhost:5173',
+      'http://localhost:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
