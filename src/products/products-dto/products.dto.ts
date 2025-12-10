@@ -1,4 +1,17 @@
-import { IsNotEmpty, IsNumber, IsString, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
+
+class ImageDto {
+  @IsString()
+  original: string;
+}
 
 export class ProductDtoToCreate {
   @IsString()
@@ -17,9 +30,10 @@ export class ProductDtoToCreate {
   @IsNotEmpty()
   category: number | null;
 
-  @IsString({ each: true })
-  @IsNotEmpty()
-  images: { original: string }[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
+  images: ImageDto[];
 
   @IsNumber()
   @IsNotEmpty()
@@ -47,9 +61,10 @@ export class ProductDto {
   @IsNotEmpty()
   category: number | null;
 
-  @IsString({ each: true })
-  @IsNotEmpty()
-  images: { original: string }[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
+  images: ImageDto[];
 
   @IsNumber()
   @IsNotEmpty()
@@ -78,8 +93,10 @@ export class ProductUpdateDto {
   category?: number | null;
 
   @IsOptional()
-  @IsString({ each: true })
-  images?: { original: string }[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ImageDto)
+  images?: ImageDto[];
 
   @IsOptional()
   @IsNumber()

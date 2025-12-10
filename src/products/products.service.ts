@@ -21,10 +21,19 @@ export class ProductsService {
 
   /**
    * Obtiene todos los productos
+   * Si se proporciona una categoría, filtra los productos por esa categoría
    * @returns Promise<ProductDto[]>
    */
-  async getAllProducts(): Promise<Products[]> {
-    const products = await this.productsRepository.find();
+  async getAllProductsAndByFilter(category?: number): Promise<Products[]> {
+
+    const query = this.productsRepository.createQueryBuilder('product');
+
+    if (category) {
+      query.where('product.category = :category', {category})
+    }
+
+    const products = await query.getMany();
+
     return products;
   }
 
@@ -121,7 +130,5 @@ export class ProductsService {
       }
 		return true;
 	}
-
-  // POR CATEGORIA const PRODUCTS = await this.productsRepository.findBy({ category: 'some-category' })
 
 }

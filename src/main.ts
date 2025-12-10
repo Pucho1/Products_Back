@@ -1,16 +1,16 @@
-import * as crypto from 'crypto';
-// import { webcrypto } from 'crypto';
+// import * as crypto from 'crypto';
+import { webcrypto } from 'crypto';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(global as any).crypto = crypto;
+// (global as any).crypto = crypto;
 
 // Inyectar crypto solo en producción
-// if (process.env.NODE_ENV === 'production') {
-//   if (!globalThis.crypto) {
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-//     (globalThis as any).crypto = webcrypto;
-//   }
-// }
+if (process.env.NODE_ENV === 'production') {
+  if (!globalThis.crypto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    (globalThis as any).crypto = webcrypto;
+  }
+}
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -26,6 +26,7 @@ async function bootstrap() {
       'https://elputooutlet.es',
       'https://backend.elputooutlet.es',
       'http://localhost:5173',
+      'http://localhost:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
