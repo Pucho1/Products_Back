@@ -19,6 +19,7 @@ import { CategoryModule } from './category/category.module';
     ConfigModule.forRoot({
       isGlobal: true,
       ignoreEnvFile: process.env.NODE_ENV === 'production',
+      envFilePath: '.env',
     }),
 
     // Conexión Asíncrona con TypeORM
@@ -49,7 +50,7 @@ import { CategoryModule } from './category/category.module';
               }),
           // Crea el esquema de la BD automáticamente (¡Solo para desarrollo!)
           autoLoadEntities: true,
-          synchronize: false, // ⚠️ Para desarrollo. En prod usar migrations.
+          synchronize: true, // ⚠️ Para desarrollo. En prod usar migrations.
         };
       },
     }),
