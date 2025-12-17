@@ -77,11 +77,9 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...user } = haveUser;
 
-    console.log('user ----->', user);
-
     return {
-      user,
-      token: this.tokentPaiload({ id: user.id }),
+      userData: user,
+      accessToken: this.tokentPaiload({ id: user.id }),
     };
   }
 
