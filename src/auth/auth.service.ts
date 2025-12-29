@@ -58,12 +58,9 @@ export class AuthService {
   }
 
   async login(loginData: LoginUserDto): Promise<UserLogin> {
-    console.log(loginData);
     const { email, password } = loginData;
 
     const haveUser = await this.userModel.findOne({ where: { email } });
-
-    console.log('haveUser ----->', haveUser);
 
     if (!haveUser) {
       throw new UnauthorizedException('error de autenticacion  --user invalid');

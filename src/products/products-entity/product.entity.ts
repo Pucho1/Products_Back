@@ -15,10 +15,8 @@ export class Products {
   @Column()
   description: string;
 
-  @ManyToOne(() => Category, (category) => category.products, {
-    nullable: true,
-  })
-  category: Category | null;
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 
   @Column({ type: 'jsonb', nullable: true })
   images: { original: string }[];

@@ -43,11 +43,11 @@ export class ProductsService {
    */
   async getProductById(id: number): Promise<Products> {
    
-    const product = await this.productsRepository.findOne({ where: { id } });
+    const product = await this.productsRepository.findOne({ where: { id }, relations: ['category'] });
 
     if (!product){
       throw new NotFoundException(`Product with id ${id} not found`);
-    }
+    };
 
     return product;
   }
@@ -123,11 +123,12 @@ export class ProductsService {
       if (productData.category) {
         category = await this.categoryService.getCategoriesById(productData.category);
       }
-      await this.productsRepository.save({ ...productData, category:  category ?? null });
 
       if (category instanceof NotFoundException) {
         throw new NotFoundException(`Category with id ${productData.category} not found`);
       }
+      // const createdProduct = await this.productsRepository.save({ ...productData, category });
+
 		return true;
 	}
 

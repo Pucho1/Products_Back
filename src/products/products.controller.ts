@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto, ProductDtoToCreate, ProductUpdateDto } from './products-dto/products.dto';
 
@@ -13,26 +13,33 @@ export class ProductsController {
   // Asi recibo los query params que me pueden servir para filtros, paginacion, etc
   @Get()
   async findAllAndByFilter(@Query('category') category?: number) {
-    console.log('parametro de find all sirve para filtrar ----->',category);
     return await this.productsService.getAllProductsAndByFilter(category);
   }
 
   @Get('/:id')
-  findProductById(@Param('id', ParseIntPipe) id: number) {
-    console.log(id);
-    return this.productsService.getProductById(id);
+  async findProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductDto | NotFoundException> {
+
+    const product = await this.productsService.getProductById(id);
+
+    return {...product,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+      category: product.category.id || null,
+    };
   }
 
   // Asi recibo el body de la peticion
   @Post('/create')
-  create(@Body() productData: ProductDtoToCreate): Promise<boolean> {
-    console.log(productData);
-    const created = this.productsService.createProduct(productData);
+  async create(@Body() productData: ProductDtoToCreate): Promise<boolean> {
+    const created = await this.productsService.createProduct(productData);
     return created;
   }
 
   @Patch('/update/:id')
   async update(@Param('id', ParseIntPipe) id: number, @Body() productData: ProductUpdateDto): Promise<ProductDto | string> {
+
     const updatedProduct = await this.productsService.updateProduct( id, productData);
 
     return {...updatedProduct,
@@ -40,7 +47,7 @@ export class ProductsController {
       name: updatedProduct.name,
       price: updatedProduct.price,
       quantity: updatedProduct.quantity,
-      category: updatedProduct.category?.id || null,
+      category: updatedProduct.category.id || null,
     };
   }
 
