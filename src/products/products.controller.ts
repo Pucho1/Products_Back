@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductDto, ProductDtoToCreate, ProductUpdateDto } from './products-dto/products.dto';
+import { HandlerProductsGuard } from './guards/handler-products-guard.guard';
 
 // Estos @xxxxxxx son decoradores los cuales son metadoatos que nest usa para al 
 //     momento de iniciar la aplicacion saber que es cada clase, metodo, propiedad, etc
@@ -16,6 +17,7 @@ export class ProductsController {
     return await this.productsService.getAllProductsAndByFilter(category);
   }
 
+  @UseGuards(HandlerProductsGuard)
   @Get('/:id')
   async findProductById(@Param('id', ParseIntPipe) id: number): Promise<ProductDto | NotFoundException> {
 

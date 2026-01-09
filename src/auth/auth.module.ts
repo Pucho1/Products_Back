@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 
+import { AuthController } from './auth.controller';
+import { User } from './entities/user.entity';
+import { AuthService } from './auth.service';
 @Module({
   controllers: [AuthController],
   providers: [AuthService],
@@ -22,7 +22,7 @@ import { ConfigService } from '@nestjs/config';
         return {
           global: true,
           secret: jwtSecret,
-          signOptions: { expiresIn: '60s' },
+          signOptions: { expiresIn: '6h' },
         };
       },
       inject: [ConfigService],

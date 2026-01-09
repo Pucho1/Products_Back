@@ -120,14 +120,14 @@ export class ProductsService {
 	async createProduct(productData: ProductDtoToCreate): Promise<boolean> {
     let category: any = null;
 
-      if (productData.category) {
-        category = await this.categoryService.getCategoriesById(productData.category);
-      }
+    if (productData.category) {
+      category = await this.categoryService.getCategoriesById(productData.category);
+    }
 
-      if (category instanceof NotFoundException) {
-        throw new NotFoundException(`Category with id ${productData.category} not found`);
-      }
-      // const createdProduct = await this.productsRepository.save({ ...productData, category });
+    if (category instanceof NotFoundException) {
+      throw new NotFoundException(`Category with id ${productData.category} not found`);
+    }
+    await this.productsRepository.save({ ...productData, category });
 
 		return true;
 	}
